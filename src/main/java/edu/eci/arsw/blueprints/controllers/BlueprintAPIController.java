@@ -5,11 +5,10 @@
  */
 package edu.eci.arsw.blueprints.controllers;
 
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 import edu.eci.arsw.blueprints.model.Blueprint;
 import edu.eci.arsw.blueprints.model.Point;
@@ -34,10 +33,10 @@ public class BlueprintAPIController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<?> manejadorGetAllBluePrints(){
-        try{
+        try {
             Map<Tuple<String, String>, Blueprint> listBluePrints = blueprintsServices.getAllBlueprints();
             return new ResponseEntity<>(listBluePrints,HttpStatus.ACCEPTED);
-        }catch (Exception ex){
+        } catch (Exception ex){
             Logger.getLogger(Blueprint.class.getName()).log(Level.SEVERE, null, ex);
             return new ResponseEntity<>("Error al obtener los planos: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -47,7 +46,7 @@ public class BlueprintAPIController {
     public ResponseEntity<?> manejadorGetBluePrintsByAuthor(@PathVariable("author") String author){
         try{
             return new ResponseEntity<>(blueprintsServices.getBlueprintsByAuthor(author),HttpStatus.ACCEPTED);
-        }catch (Exception ex){
+        } catch (Exception ex){
             Logger.getLogger(Blueprint.class.getName()).log(Level.SEVERE, null, ex);
             return new ResponseEntity<>( ex.getMessage(), HttpStatus.NOT_FOUND);
         }
@@ -57,7 +56,7 @@ public class BlueprintAPIController {
     public ResponseEntity<?> manejadorGetBluePrint(@PathVariable("author") String author,  @PathVariable("bpname") String bpname){
         try{
             return new ResponseEntity<>(blueprintsServices.getBlueprint(author,bpname),HttpStatus.ACCEPTED);
-        }catch (Exception ex){
+        } catch (Exception ex){
             Logger.getLogger(Blueprint.class.getName()).log(Level.SEVERE, null, ex);
             return new ResponseEntity<>( ex.getMessage(), HttpStatus.NOT_FOUND);
         }
@@ -68,7 +67,7 @@ public class BlueprintAPIController {
         try{
             blueprintsServices.addNewBlueprint(bp);
             return new ResponseEntity<>(HttpStatus.CREATED);
-        }catch(Exception ex){
+        } catch(Exception ex){
             Logger.getLogger(Blueprint.class.getName()).log(Level.SEVERE, null, ex);
             return new ResponseEntity<>( ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
@@ -79,10 +78,37 @@ public class BlueprintAPIController {
         try{
             blueprintsServices.updateBluePrint(author,bpname,bp);
             return new ResponseEntity<>(HttpStatus.CREATED);
-        }catch(Exception ex){
+        } catch(Exception ex){
             Logger.getLogger(Blueprint.class.getName()).log(Level.SEVERE, null, ex);
             return new ResponseEntity<>( ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
     }
+
+    @RequestMapping(method = RequestMethod.PUT)
+    public ResponseEntity<?> manejadorPutBluePrint(@RequestBody Map<String, Object> payload) {
+        try {
+            String author = (String) payload.get("author");
+            String bpname = (String) payload.get("name");
+            List<Map<String, Integer>> points = (List<Map<String, Integer>>) payload.get("points");
+
+            Point[] pointArray = new Point[points.size()];
+            for (int i = 0; i < points.size(); i++) {
+                Map<String, Integer> point = points.get(i);
+                int x = point.get("x");
+                int y = point.get("y");
+                pointArray[i] = new Point(x, y);
+            }
+
+            Blueprint bp = new Blueprint(bpname, author,pointArray);
+
+            blueprintsServices.updateBluePrint(author, bpname, bp);
+
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } catch(Exception ex) {
+            Logger.getLogger(Blueprint.class.getName()).log(Level.SEVERE, null, ex);
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
 }
 
