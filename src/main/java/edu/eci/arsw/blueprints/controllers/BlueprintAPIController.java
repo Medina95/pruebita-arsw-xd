@@ -49,6 +49,7 @@ public class BlueprintAPIController {
         } catch (Exception ex){
             Logger.getLogger(Blueprint.class.getName()).log(Level.SEVERE, null, ex);
             return new ResponseEntity<>( ex.getMessage(), HttpStatus.NOT_FOUND);
+
         }
     }
 
@@ -72,8 +73,6 @@ public class BlueprintAPIController {
             return new ResponseEntity<>( ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
     }
-
-
 
     @RequestMapping(method = RequestMethod.PUT)
     public ResponseEntity<?> manejadorPutBluePrint(@RequestBody Map<String, Object> payload) {
