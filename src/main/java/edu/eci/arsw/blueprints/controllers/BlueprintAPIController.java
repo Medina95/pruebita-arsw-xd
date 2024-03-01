@@ -74,39 +74,13 @@ public class BlueprintAPIController {
     }
 
     @PutMapping(path ="/{author}/{bpname}")
-    public ResponseEntity<?> manejadorPutBluePrint(@PathVariable("author") String author,  @PathVariable("bpname") String bpname,  @PathVariable("bp") Blueprint bp){
+    public ResponseEntity<?> manejadorPutBluePrint(@PathVariable("author") String author,  @PathVariable("bpname") String bpname, @RequestBody Map<String, Object> payload){
         try{
-            blueprintsServices.updateBluePrint(author,bpname,bp);
+            blueprintsServices.updateBluePrint(author,bpname,payload);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch(Exception ex){
             Logger.getLogger(Blueprint.class.getName()).log(Level.SEVERE, null, ex);
             return new ResponseEntity<>( ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
-        }
-    }
-
-    @RequestMapping(method = RequestMethod.PUT)
-    public ResponseEntity<?> manejadorPutBluePrint(@RequestBody Map<String, Object> payload) {
-        try {
-            String author = (String) payload.get("author");
-            String bpname = (String) payload.get("name");
-            List<Map<String, Integer>> points = (List<Map<String, Integer>>) payload.get("points");
-
-            Point[] pointArray = new Point[points.size()];
-            for (int i = 0; i < points.size(); i++) {
-                Map<String, Integer> point = points.get(i);
-                int x = point.get("x");
-                int y = point.get("y");
-                pointArray[i] = new Point(x, y);
-            }
-
-            Blueprint bp = new Blueprint(bpname, author,pointArray);
-
-            blueprintsServices.updateBluePrint(author, bpname, bp);
-
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        } catch(Exception ex) {
-            Logger.getLogger(Blueprint.class.getName()).log(Level.SEVERE, null, ex);
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
