@@ -1,0 +1,11 @@
+¿Qué condiciones de carrera se podrían presentar? 
+
+ Cuando múltiples peticiones acceden a los métodos de la persistencia e intentan Crear o modificar los datos del  hashmap  al mismo tiempo, pueden ocurrir condiciones de carrera como por ejemplo que los puntos del plano sean completamente diferentes. 
+
+¿Cuáles son las respectivas regiones críticas? 
+
+La estructura de datos compartida que en este caso es el hashmap que contiene 	el autor, nombre y plano.  
+
+Estrategia:
+
+Se remplazo el HashMap con un ConcurrentHashMap, que es una implementación thread-safe de un mapa en Java. Permitiendo que múltiples peticiones puedan crear y modificar el mapa simultáneamente sin correr el riesgo de condiciones de carrera. Además, se ha utilizado el método putIfAbsent() para la inserción de nuevos blueprints, lo que garantiza que no se sobrescriba los planos en general. 
