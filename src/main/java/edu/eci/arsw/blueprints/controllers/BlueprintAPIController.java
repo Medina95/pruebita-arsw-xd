@@ -115,12 +115,28 @@ public class BlueprintAPIController {
             Blueprint bp = new Blueprint(bpname, author,pointArray);
             blueprintsServices.updateBluePrint(author,bpname,bp);
 
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
         } catch(Exception ex){
             Logger.getLogger(Blueprint.class.getName()).log(Level.SEVERE, null, ex);
             return new ResponseEntity<>( ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
     }
+
+    @RequestMapping(method = RequestMethod.DELETE)
+    public ResponseEntity<?> manejadordeleteBluePrint(@RequestBody Map<String, Object> payload ){
+        try{
+            String autor= (String) payload.get("author");
+            String nombre= (String) payload.get("name");
+            blueprintsServices.deleteBluePrint(autor, nombre);
+            return new ResponseEntity<>( HttpStatus.ACCEPTED);
+
+        } catch(Exception ex){
+            Logger.getLogger(Blueprint.class.getName()).log(Level.SEVERE, null, ex);
+            return new ResponseEntity<>( ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
+     
+    }
+
 
 }
 
